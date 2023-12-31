@@ -1,0 +1,108 @@
+.main {
+    /* background-image: url("/assets/images/cover.jpeg"); */
+    margin: 40px;
+  }
+  
+
+  /* Create a New Task Section */
+  .create-task {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .create-task h2 {
+    margin-bottom: 20px;
+    color: #000268;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .btn-add {
+    background-color: #8366dc;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 100px;
+  }
+  
+  .btn-add:hover {
+    background-color: #969be7;
+  }
+
+  
+/* Task List Section */
+.task-list {
+  margin: 10px;
+  overflow-y: scroll;
+  height: 750px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .fixed-title {
+    color: #130274;
+    margin: 10px;
+
+  }
+  
+  .task-item {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 310px;
+  }
+
+  .btn-div{
+    justify-content: space-evenly;
+  }
+  
+  .btn{
+    background-color: #8366dc;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin: 10px;
+    padding-top: -10px;
+    height: 40px;
+  }
+
+  .btn:hover{
+    background-color: #969be7;
+  }
+
+  .red-task {
+    background-color: #fcc2c2b0; /* Red background color */
+  }
+  
+  .yellow-task {
+    background-color: #fdf7b4b0; /* Yellow background color */
+  }
+  
+  .green-task {
+    background-color: #c1fec19d; /* Green background color */
+  }
+  
+
+  

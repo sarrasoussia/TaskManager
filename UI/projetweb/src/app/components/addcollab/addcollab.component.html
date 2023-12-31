@@ -1,0 +1,16 @@
+<div class="collab row">
+    <h2 class="fixed-title" style="font-size: 20px;">Collaborators</h2>
+  
+    <div class="user-input-container col-3">
+      <input id="username" [(ngModel)]="enteredUsername" (input)="getUserDetails()" placeholder="Username">
+      <button class="add-btn" (click)="addCollaborator()">Add Collaborator</button>
+    </div>
+  
+    <div class="col-9 row collabs-container">
+      <div class="user-details col-3" *ngFor="let collaborator of collaborators">
+        <p> {{ collaborator.name }} {{ collaborator.surname | uppercase }}</p>
+      </div>
+    
+    </div>
+  </div>
+  

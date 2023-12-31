@@ -1,0 +1,28 @@
+.container{
+    position: relative;
+    height: 100vh;
+    background-image: url("/assets/images/cover.jpeg");
+}
+.cover{
+    /* max-width: fit-content; */
+    /* height: 800px; */
+}
+
+.descrip{
+    font-size: 50px;
+
+}
+.content{
+    padding: 120px;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    top: 150px;
+    background-color: rgba(251, 251, 251, 0.908);
+    height: 500px;
+    /* font-weight: bold; */
+    
+}
+.btn{
+    background-color: rgb(214, 184, 255);
+}

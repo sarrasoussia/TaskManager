@@ -1,0 +1,19 @@
+header {
+    background-color: #08002c; 
+    color: #fff; 
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .left-links a, .right-links span {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 100px;
+    cursor: pointer;
+  }
+  
+  .left-links a:hover, .right-links span:hover {
+    text-decoration: underline;
+  }

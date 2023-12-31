@@ -1,0 +1,93 @@
+<app-header></app-header>
+
+<div class="row main">
+  <!-- Create a New Task Section -->
+  <div class="col-3 p-4 align-items-center justify-content-center">
+    <div class="create-task">
+      <h2>Create a New Task</h2>
+      
+      <!-- Task Form -->
+      <div class="form-group">
+        <label for="taskName">Task Name</label><br>
+        <input id="taskName" [(ngModel)]="task.name" placeholder="Enter task name" />
+      </div>
+
+      <div class="form-group">
+        <label for="taskDescription">Task Description</label><br>
+        <textarea id="taskDescription" [(ngModel)]="task.description" placeholder="Enter task details"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="deadline">Deadline</label><br>
+        <input type="date" id="deadline" [(ngModel)]="task.deadline" />
+      </div>
+
+      <div class="form-group">
+        <label for="owner">Owner</label><br>
+        <input id="owner" [(ngModel)]="task.owner" placeholder="Enter owner name" />
+      </div>
+
+      <div class="form-group">
+        <label for="exampleFormControlFile1">Add a file</label>
+        <input [(ngModel)]="task.file" type="file" class="form-control-file" id="exampleFormControlFile1" (change)="onFileSelected($event)" />
+      </div>
+      
+      
+      <div class="form-group">
+        <label for="inlineFormCustomSelect">State</label><br>
+        <select id="inlineFormCustomSelect" [(ngModel)]="task.state">
+          <option value="pending">Pending</option>
+          <option value="progress">On Progress</option>
+          <option value="finished">Finished</option>
+        </select>
+      </div>
+
+      <button class="btn-add" (click)="addTask()">Add Task</button>
+    </div>
+  </div>
+
+  <!-- hedhi div lkbira aal limin -->
+  <div class="col-8">
+
+  <!-- add collaborator -->
+   <app-addcollab></app-addcollab>
+
+  <!-- Task List Section -->
+  <div class=" task-list align-items-center ">
+    <h2 class="fixed-title">Task List</h2>
+
+    <div class="task-list-content row">
+
+        <div *ngFor="let t of tasks" [ngClass]="getTaskColorClass(t.deadline)" class="task-item col-4">
+          <div *ngIf="!t.editing">
+            <p><strong>{{ t.name }}</strong></p>
+            <p>Description: {{ t.description }}</p>
+            <p>Deadline: {{ t.deadline | date }}</p>
+            <p>Owner: {{ t.owner | uppercase }}</p>
+            <p>State: {{ t.state }}</p>
+            <p>Attached: {{ t.file }}</p>
+          </div>
+
+          <div *ngIf="t.editing" class="btn-div row">
+            <input [(ngModel)]="t.name" placeholder="Name">
+            <textarea [(ngModel)]="t.description" placeholder="Description"></textarea>
+            <!-- Add input fields for other properties as needed -->
+            <button class="btn col-4" (click)="saveTask(t)">Save</button>
+            <button class="btn col-4" (click)="cancelEdit(t)">Cancel</button>
+          </div>
+
+          <div class="btn-div row">
+            <button class="btn col-4" (click)="editTask(t)">Edit</button>
+            <button class="btn col-4" (click)="removeTask(t.id)">Remove</button>
+          </div>
+
+        </div>
+
+    </div>
+
+
+  </div>
+
+  </div>
+
+</div>
