@@ -11,6 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 // MySQL connection
 const db = mysql.createConnection({
   host: 'localhost',
@@ -18,6 +19,7 @@ const db = mysql.createConnection({
   password: '',
   database: 'task_manager_db',
 });
+
 
 db.connect((err) => {
   if (err) {
@@ -50,39 +52,70 @@ app.post('/signup', (req, res) => {
 });
 
 
-
-//sign in
+// Sign in 
 app.post('/signin', (req, res) => {
+
+  db.query('DELETE FROM active_user', (error, results) => {
+  });
+
   const { email, password } = req.body;
   authenticateUser(email, password)
     .then((user) => {
       if (user) {
-        res.json({ success: true });
-      } else {
-        res.status(401).json({ error: 'Invalid email or password' });
-      }
-    })
-    .catch((error) => {
-      console.error('Error during authentication:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    });
+  const insertQuery = `
+    INSERT INTO active_user (username, name, surname, email)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  const { username, name, surname, email } = user;
+  db.query(insertQuery, [username, name, surname, email], (error, results) => {
+    res.json({ success: true, userDetails: user });
+  });
+  } else {
+  res.status(401).json({ error: 'Invalid email or password' });
+  }
+  })
+  .catch((error) => {
+  console.error('Error during authentication:', error);
+  res.status(500).json({ error: 'Internal server error' });
+  });
 });
+
 
 function authenticateUser(email, password) {
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (error, results) => {
-
-      if (results.length > 0) {
-        const user = results[0];
-        resolve(user);
-      } else {
-        resolve(null);
+    db.query(
+      'SELECT username, name, surname, email FROM users WHERE email = ? AND password = ?',
+      [email, password],
+      (error, results) => {
+        if (results.length > 0) {
+          const user = results[0];
+          resolve(user);
+        } else {
+          resolve(null);
+        }
       }
-    });
+    );
   });
 }
 
-// task mtaa sarra 
+// logout route
+app.post('/logout', (req, res) => {
+  db.query('DELETE FROM active_user', (error, results) => {
+    if (error) {
+      console.error('Error clearing user from active_user table:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+
+    res.json({ message: 'User cleared from active_user table' });
+  });
+});
+
+
+
+
+// create a new task (sarra) 
 app.post('/tasks', (req, res) => {
   const newTask = req.body;
 
@@ -100,7 +133,6 @@ app.post('/tasks', (req, res) => {
     res.json(newTask);
   });
 });
-
 
 app.get('/tasks', (req, res) => {
   db.query('SELECT * FROM tasks', (error, results) => {
@@ -139,7 +171,6 @@ app.put('/tasks/:id', (req, res) => {
   );
 });
 
-
 app.delete('/tasks/:id', (req, res) => {
   const taskId = parseInt(req.params.id);
   db.query('DELETE FROM tasks WHERE id = ?', taskId, (error, results) => {
@@ -157,30 +188,99 @@ app.delete('/tasks/:id', (req, res) => {
 });
 
 
-
-// Get user details by username
-app.get('/users', (req, res) => {
-  const { username } = req.query;
-
-  if (!username) {
-    return res.status(400).json({ error: 'Username is required' });
-  }
-
-  const sql = 'SELECT name, surname FROM users WHERE username = ?';
-  db.query(sql, [username], (error, results) => {
+// get active user details
+app.get('/activeUser', (req, res) => {
+  const sql = 'SELECT username FROM active_user LIMIT 1';
+  db.query(sql, (error, results) => {
     if (error) {
-      console.error('Error fetching user details:', error);
-      return res.status(500).json({ error: 'Error fetching user details' });
+      console.error('Error fetching active user details:', error);
+      return res.status(500).json({ error: 'Error fetching active user details' });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Active user not found' });
     }
 
-    const userDetails = results[0];
-    res.json(userDetails);
+    const activeUserDetails = results[0];
+    res.json(activeUserDetails);
   });
 });
+
+// add collaborator endpoint
+app.post('/addCollaborator', (req, res) => {
+  const { username, collaborator } = req.body;
+
+  if (!username || !collaborator) {
+    return res.status(400).json({ error: 'Username and collaborator are required' });
+  }
+
+  // check if collaborator already exists for the specific user
+  db.query('SELECT collaborators FROM users WHERE username = ?', [username], (selectError, selectResults) => {
+    if (selectError) {
+      console.error('Error checking for existing collaborator:', selectError);
+      return res.status(500).json({ error: 'Error checking for existing collaborator' });
+    }
+
+    const existingCollaborators = selectResults[0]?.collaborators || '';
+    
+    // check if collaborator already exists
+    if (existingCollaborators.split(',').includes(collaborator)) {
+      return res.status(400).json({ error: 'Collaborator already exists for the user' });
+    }
+
+    // update collaborators in the users table for the specific user
+    db.query('UPDATE users SET collaborators = CONCAT_WS(",", collaborators, ?) WHERE username = ?',
+      [collaborator, username], (updateError, updateResults) => {
+        if (updateError) {
+          console.error('Error adding collaborator to the database:', updateError);
+          return res.status(500).json({ error: 'Error adding collaborator to the database' });
+        }
+
+        res.json({ message: 'Collaborator added successfully to the database' });
+      });
+  });
+});
+
+
+function fetchCollaborators(username, callback) {
+  const collaboratorsSql = 'SELECT collaborators FROM users WHERE username = ?';
+  db.query(collaboratorsSql, [username], (error, results) => {
+    if (error) {
+      console.error('Error fetching collaborators:', error);
+      callback(error, null);
+      return;
+    }
+
+    const collaborators = results[0]?.collaborators ? results[0].collaborators.split(',') : [];
+    callback(null, collaborators);
+  });
+}
+
+// Example endpoint to get collaborators for the active user
+app.get('/getCollaborators', (req, res) => {
+  const activeUserSql = 'SELECT username FROM active_user LIMIT 1';
+  db.query(activeUserSql, (error, results) => {
+    if (error) {
+      console.error('Error fetching active user details:', error);
+      return res.status(500).json({ error: 'Error fetching active user details' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Active user not found' });
+    }
+
+    const activeUserDetails = results[0];
+
+    fetchCollaborators(activeUserDetails.username, (collaboratorsError, collaborators) => {
+      if (collaboratorsError) {
+        return res.status(500).json({ error: 'Error fetching collaborators' });
+      }
+
+      res.json(collaborators);
+    });
+  });
+});
+
 
 
 

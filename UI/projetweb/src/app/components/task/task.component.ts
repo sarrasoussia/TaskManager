@@ -28,7 +28,6 @@ export class TaskComponent implements OnInit {
     const taskId = this.tasks.length + 1;
     const newTask = new Task(
       taskId,
-      // this.task.username,
       this.task.name,
       this.task.description,
       this.task.deadline,

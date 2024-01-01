@@ -1,10 +1,12 @@
-
-
   <header>
+    <div class="main-header">
+
     <div class="left-links">
-      <a routerLink="/tasks">My Tasks</a>
-      <a routerLink="/container">Collaborative Board</a>
+        <a routerLink="/tasks">My Tasks</a>
+        <a routerLink="/container">Collaborative Board</a>
+        <span class="custom" >Welcome {{ userDetails.username }} !</span>
     </div>
+
     <div class="right-links">
       <span (click)="logout()">Logout
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
@@ -14,6 +16,8 @@
       </span>
   
     </div>
+
+  </div>
   </header>
 
 

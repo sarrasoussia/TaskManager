@@ -1,24 +1,13 @@
-/* .main {
-  background-image: url("/assets/images/cover.jpeg");
-} */
-
 .main-container {
   /* bch tabda kad lpage */
   height: 100%;
   margin: 0;
 }
 .tasks{
-  /* justify-content: center;
-  align-items: center;
-  display: flex;
-  width: 1100px;
-  padding: 30px; */
   border-top-right-radius: 30px;
   border-top-left-radius: 30px;
   border-radius: 30px;
   background-color: rgb(255, 255, 255);
-  /* background:linear-gradient(to right, rgb(0, 0, 0) ,rgba(255,101,117,255), white); */
-  /* transform: translate(37px, 0); */
 
 }
 .users{
@@ -30,6 +19,5 @@ h1 {
   color: #10002f; 
   margin: 20px;
   margin-left: 40%;
- 
 }
 

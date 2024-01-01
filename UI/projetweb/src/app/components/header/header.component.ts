@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -7,13 +9,27 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  userDetails: { username: string } | null = null;
+
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit() {
+    this.userService.getActiveUserDetails().subscribe(
+      (data) => {
+        this.userDetails = data;
+      },
+      (error) => {
+        console.error('Error fetching user details:', error);
+      }
+    );
   }
 
   logout(): void {
-    this.router.navigate(['']);
+    this.userService.clearActiveUser().subscribe(
+      () => {
+        this.router.navigate(['']); 
+      },
+    );
   }
 
 }

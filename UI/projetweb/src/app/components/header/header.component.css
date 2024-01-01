@@ -1,19 +1,26 @@
 header {
+    height: 80px;
     background-color: #08002c; 
     color: #fff; 
-    padding: 10px;
+  }
+
+  .main-header{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
   }
   
-  .left-links a, .right-links span {
+  .left-links a,.left-links span, .right-links span {
     color: #fff;
     text-decoration: none;
-    margin: 0 100px;
-    cursor: pointer;
+    margin: 80px;
+
   }
-  
   .left-links a:hover, .right-links span:hover {
     text-decoration: underline;
+  }
+
+  .custom{
+    font-size: 20px;
+    font-style: oblique;
   }

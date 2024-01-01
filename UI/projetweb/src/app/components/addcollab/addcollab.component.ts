@@ -7,39 +7,43 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./addcollab.component.css']
 })
 export class AddcollabComponent implements OnInit {
-  enteredUsername: string = '';
-  userDetails: { name: string; surname: string } | null = null;
-  collaborators: { name: string; surname: string }[] = [];
+  
+  enteredUsername: string = '';  
+  collaborators: string[] = [];
 
   constructor(private userService: UserService) {}
 
-  ngOnInit() {}
-
-  getUserDetails(): void {
-    if (this.enteredUsername) {
-      this.userService.getUserDetails(this.enteredUsername).subscribe(
-        (userDetails) => {
-          this.userDetails = userDetails;
+  ngOnInit() {
+      this.userService.getCollaborators().subscribe(
+        (collaborators) => {
+          this.collaborators = collaborators;
         },
         (error) => {
-          console.error('Error fetching user details:', error);
-          this.userDetails = null;
+          console.error('Error fetching collaborators', error);
         }
       );
-    } else {
-      this.userDetails = null;
-    }
   }
-
+  
   addCollaborator(): void {
-    if (this.userDetails) {
-      this.collaborators.push({
-        name: this.userDetails.name,
-        surname: this.userDetails.surname
-      });
-
-      this.enteredUsername = '';
-      this.userDetails = null;
-    }
+    this.userService.addCollaborator(this.enteredUsername).subscribe(
+      (response) => {
+        console.log('Collaborator added successfully', response);
+        
+        if (this.collaborators.indexOf(this.enteredUsername) === -1) {
+          this.collaborators.push(this.enteredUsername);
+        } else {
+          console.warn('Collaborator already exists locally');
+        }
+      },
+      (error) => {
+        console.error('Error adding collaborator', error);
+        if (error && error.error && error.error.message) {
+          alert(error.error.message);
+        }
+      }
+    );
   }
+  
+
+
 }
