@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class AddcollaboratorService {
-  private users:{nom:string,prenom:string,tel:number,email:string}[]=[
-    {nom:"soussia",prenom:"sarra",tel:12345678,email:"bhiriala577@gmail.com"},
-    {nom:"bhiri",prenom:"ala",tel:789456612,email:"lakkdn@gmail.com"}
-  ]
-  getAllcollaboraters():{nom:string,prenom:string,tel:number,email:string}[]{
-    return this.users;
+  private apiUrl = 'http://localhost:3000/collab';
+  
+  addCollab(passwordd: string, collabusername: string): Observable<any> {
+    const requestBody = { passwordd: passwordd, collabusername: collabusername };
+    return this.http.post(this.apiUrl, requestBody);
   }
-  addCollaborator(name:string,fname:string,phone:number,mail:string){
-    const item = { nom: name, prenom: fname, tel: phone,email: mail};
-    this.users.push(item);
+  getcollabs(password:string): Observable<{username:string,name:string,surname:string,email:string,password:string,collaborators:string}[]>{
+    const url = `${this.apiUrl}?password=${password}`;
+    return this.http.get<{username:string,name:string,surname:string,email:string,password:string,collaborators:string}[]>(url);
   }
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 }

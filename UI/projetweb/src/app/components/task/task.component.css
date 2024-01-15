@@ -50,6 +50,7 @@
   
 /* Task List Section */
 .task-list {
+  width: 110%;
   margin: 10px;
   overflow-y: scroll;
   height: 750px;

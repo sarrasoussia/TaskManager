@@ -6,20 +6,20 @@
         <div *ngFor="let item of list.ala" cdkDrag [cdkDragData]="item" class="example-box ">
           <div>
             <i class="label">Task Name: </i>
-            <h6 class="value">{{ item.taskname }}</h6>
+            <h6 class="value">{{ item.titre }}</h6>
             <i class="label">Task Description: </i>
             <h6 class="value">{{ item.description }}</h6>
             <i class="label">Task Owner: </i>
-            <h6 class="value">{{ item.owner }}</h6>
+            <h6 class="value">{{ item.proprietaire }}</h6>
+            <i class="label">final date: </i>
+            <h6 class="value">{{ item.date_fin }}</h6>
           </div>
-          
-          
         </div>
       </div>
 
       <div *ngIf="list.nom === 'Done'">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Task Name</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Task Title</span>
           <input [(ngModel)]="newDoneTaskname"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
@@ -30,12 +30,15 @@
           <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner</span>
           <input [(ngModel)]="newDoneTaskowner"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Final Date</span>
+          <input [(ngModel)]="newDoneDate"type="date" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
         <button type="button" class="btn btn-secondary button"  (click)="adddDoneTasks()">Apply</button>
       </div>
-
       <div *ngIf="list.nom === 'ToDo'">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Task Name</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Task Title</span>
           <input [(ngModel)]="newtodoTaskname"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
@@ -46,12 +49,16 @@
           <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner</span>
           <input [(ngModel)]="newtodoTaskowner"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Final Date</span>
+          <input [(ngModel)]="newtodoDate"type="date" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
         <button type="button" class="btn btn-secondary button" (click)="adddToDoTasks()">Apply</button>
       </div>
 
       <div *ngIf="list.nom === 'In Progress'">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Task Name</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Task Title</span>
           <input [(ngModel)]="newinprogressTaskname"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
@@ -61,6 +68,10 @@
         <div class="input-group input-group-sm mb-3">
           <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner</span>
           <input [(ngModel)]="newinprogressTaskowner"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Final Date</span>
+          <input [(ngModel)]="newinprogressDate"type="date" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <button type="button" class="btn btn-secondary button" (click)="adddInprogressTasks()">Apply</button>
       </div>

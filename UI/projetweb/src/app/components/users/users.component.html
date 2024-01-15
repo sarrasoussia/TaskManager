@@ -5,33 +5,25 @@
       <app-user [user]="u" ></app-user>
   </div>
 </div>
-
-<div class="input-rows col-8">
-
+<div class="input-rows col-8" style="transform: translate(35px,0px);">
   <div class="input-group input-group-sm mb-3">
-      <span class="input-group-text" id="inputGroup-sizing-sm">User Name</span>
-      <input [(ngModel)]="newUserName"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-  </div>
-
+    <span class="input-group-text" id="inputGroup-sizing-sm">your password</span>
+    <input [(ngModel)]="password"type="password" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+</div>
+<div class="d-grid gap-2 col-6 mx-auto" style="margin-bottom: 15px; background-color: #d8bdf0; border-radius: 10px;" >
+  <button class="btn " type="button" (click)="showcollabs()">Show Collaborators</button>
+</div>
   <div class="input-group input-group-sm mb-3">
-    <span class="input-group-text" id="inputGroup-sizing-sm">User First Name</span>
-    <input [(ngModel)]="newUserFname"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+      <span class="input-group-text" id="inputGroup-sizing-sm">your password</span>
+      <input [(ngModel)]="passwordd"type="password" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
   </div>
-
   <div class="input-group input-group-sm mb-3">
-    <span class="input-group-text" id="inputGroup-sizing-sm">Phone</span>
-    <input [(ngModel)]="newUserphone"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-  </div>
-
-  <div class="input-group input-group-sm mb-3">
-    <span class="input-group-text" id="inputGroup-sizing-sm">E-mail</span>
-    <input [(ngModel)]="newUserEmail"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-  </div>
-
+    <span class="input-group-text" id="inputGroup-sizing-sm">Collaborator Username</span>
+    <input [(ngModel)]="newCollabUsername"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+</div>
   <div class="d-grid gap-2 col-6 mx-auto" style="margin-bottom: 15px; background-color: #d8bdf0; border-radius: 10px;" >
-      <button class="btn " type="button" (click)="addcollaborator()">Add Collaborator</button>
+      <button class="btn " type="button" (click)="addCollab()">Add Collaborator</button>
   </div>
 
 </div>
-
 </div>

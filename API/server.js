@@ -1,33 +1,60 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const mysql = require('mysql');
-const cors = require('cors'); 
-
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import mysql from "mysql2"
+import {getAlltasks,createtask,getCollabs,addcollab} from './database.js'
 const app = express();
 const port = 3000;
-
-
-app.use(cors()); 
+// Middleware
+app.use(cors()); // Enable CORS
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
-// MySQL connection
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
   database: 'task_manager_db',
 });
-
-
-db.connect((err) => {
-  if (err) {
-    console.error('MySQL connection failed: ' + err.stack);
-    return;
+app.get('/tasklist',async (req,res)=>{
+  const tasks =await getAlltasks()
+  res.send(tasks)
+})
+app.post('/tasklist', async (req, res) => {
+  try {
+    const { etat, titre, description, proprietaire, date_fin } = req.body;
+    const note = await createtask(etat, titre, description, proprietaire, date_fin);
+    res.send(note);
+  } catch (error) {
+    console.error('Error adding task:', error);
+    res.status(500).send({ error: 'Internal Server Error' });
   }
-  console.log('Connected to MySQL database');
 });
+
+app.post('/collab', async (req, res) => {
+  const { passwordd ,collabusername} = req.body;
+  if (!passwordd||!collabusername) {
+    return res.status(400).json({ error: 'passwordd is required' });
+  }
+  if (res.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  const collabs = await addcollab(passwordd,collabusername);
+  res.send(collabs);
+});
+
+app.get('/collab', async (req, res) => {
+  const { password } = req.query;
+  if (!password) {
+    return res.status(400).json({ error: 'password is required' });
+  }
+  if (res.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  const collabs = await getCollabs(password);
+  res.send(collabs);
+});
+
+
 
 //sign up
 app.post('/signup', (req, res) => {
@@ -281,10 +308,6 @@ app.get('/getCollaborators', (req, res) => {
   });
 });
 
-
-
-
-// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

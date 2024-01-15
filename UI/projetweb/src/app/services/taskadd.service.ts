@@ -1,39 +1,18 @@
 import { Injectable } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class TaskaddService {
-  private donetasks: { taskname: string, owner: string, description: string }[] = [
-   
-  ];
-  private inprogresstasks: { taskname: string, owner: string, description: string }[] = [
-   
-  ];
-  private todotasks: { taskname: string, owner: string, description: string }[] = [
-   
-  ];
   
-  addDoneTasks(taskn:string,own:string,descrip:string):void{
-    const item = { taskname: taskn, owner: own, description: descrip };
-    this.donetasks.push(item);
+  private apiUrl = 'http://localhost:3000/tasklist';
+
+  addTask(task:any): Observable<any> {
+    return this.http.post(this.apiUrl,task);
   }
-  addtodoTasks(taskn:string,own:string,descrip:string):void{
-    const item = { taskname: taskn, owner: own, description: descrip };
-    this.todotasks.push(item);
-  }
-  addinprogressTasks(taskn:string,own:string,descrip:string):void{
-    const item = { taskname: taskn, owner: own, description: descrip };
-    this.inprogresstasks.push(item);
-  }
-  getAlldonetasks():{ taskname: string, owner: string, description: string }[]{
-    return this.donetasks;
-  }
-  getAllinprogresstasks():{ taskname: string, owner: string, description: string }[]{
-    return this.inprogresstasks;
-  }
-  getAlltodotasks():{ taskname: string, owner: string, description: string }[]{
-    return this.todotasks;
-  }
-  constructor() { }
+  getAllTasks(): Observable<{  id: number,etat: string,titre: string, description: string ,proprietaire: string,date_fin: Date }[]> {
+  return this.http.get<{  id: number,etat: string,titre: string, description: string ,proprietaire: string,date_fin: Date }[]>(this.apiUrl);
+}
+  constructor(private http: HttpClient) { }
 }

@@ -1,13 +1,14 @@
 .container{
     /*bch tabda 9ad lpage */
-    height: 100vh;
+    height: 100%;
     padding: 100px;
     /* position: relative; */
     background-image: url("/assets/images/cover.jpeg");
+    background-position: -50px;
 }
 
 .siginform{
-    height: 700px;
+    height: 600px;
     padding: 120px;
     background-color: rgba(251, 251, 251, 0.908);
  }

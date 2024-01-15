@@ -6,28 +6,34 @@ import { AddcollaboratorService } from 'src/app/services/addcollaborator.service
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-  users :{nom:string,prenom:string,tel:number,email:string}[]=this.AddcollaboratorService.getAllcollaboraters();
-  
-  newUserName:string="";
-  newUserFname:string="";
-  newUserphone:number|undefined;
-  newUserEmail:string="";
-  addcollaborator():void{
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const phonePattern = /^\d{8}$/;
-    if(this.newUserName.trim()!==""&&this.newUserFname.trim()!==""&&this.newUserEmail.trim()!==""&&emailPattern.test(this.newUserEmail)&&this.newUserphone !== undefined && phonePattern.test(this.newUserphone.toString()) ){
-      this.AddcollaboratorService.addCollaborator(this.newUserName,this.newUserFname,this.newUserphone,this.newUserEmail);
-      this.users=this.AddcollaboratorService.getAllcollaboraters();
-      this.newUserEmail="";
-      this.newUserName="";
-      this.newUserFname="";
-      this.newUserphone=undefined;
+  passwordd:string="";
+  password:string="";
+  newCollabUsername:string="";
+  users :string[]=[];
+  userss :string;
+  constructor(private AddcollaboratorService:AddcollaboratorService) { }
+  addCollab(){
+    this.AddcollaboratorService.addCollab(this.passwordd,this.newCollabUsername).subscribe(res=>{
+      console.log(res);
+      this.showcollabs();     
     }
+    )
+    this.passwordd="";
+    this.newCollabUsername="";   
+  }
+  showcollabs(){
+    this.AddcollaboratorService.getcollabs(this.password).subscribe(res=>{
+      this.userss=res[0].collaborators;
+      this.users=this.userss.split(',').filter(element => element !== '');
+    })
 
   }
-  constructor(private AddcollaboratorService:AddcollaboratorService) { }
-
   ngOnInit() {
+    this.AddcollaboratorService.getcollabs(this.password).subscribe(res=>{
+      this.userss=res[0].collaborators;
+      this.users=this.userss.split(',').filter(element => element !== '');
+    })
+   
   }
 
 }

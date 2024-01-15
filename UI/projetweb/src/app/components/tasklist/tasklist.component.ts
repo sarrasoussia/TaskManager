@@ -10,62 +10,95 @@ import { TaskaddService } from 'src/app/services/taskadd.service';
 })
 export class TasklistComponent implements OnInit {
   newDoneTaskname:string="";
-  newtodoTaskname:string="";
-  newinprogressTaskname:string="";
   newDoneTaskdescrip:string="";
-  newtodoTaskdescrip:string="";
-  newinprogressTaskdescrip:string="";
   newDoneTaskowner:string="";
+  newDoneDate:Date|undefined;
+  newtodoTaskname:string="";
+  newtodoTaskdescrip:string="";
   newtodoTaskowner:string="";
+  newtodoDate:Date|undefined;
+  newinprogressTaskname:string="";
+  newinprogressTaskdescrip:string="";
   newinprogressTaskowner:string="";
+  newinprogressDate:Date|undefined;
+
   
-  todo: { taskname: string, owner: string, description: string }[]=this.taskAddService.getAlltodotasks() ;
-  done: { taskname: string, owner: string, description: string }[]=this.taskAddService.getAlldonetasks();
-  inprogress: { taskname: string, owner: string, description: string }[]=this.taskAddService.getAllinprogresstasks();
+  todo: {id: number,etat: string,titre: string, description: string ,proprietaire: string,date_fin: Date }[]=[] ;
+  done: { id: number,etat: string,titre: string, description: string ,proprietaire: string,date_fin: Date}[]=[];
+  inprogress: { id: number,etat: string,titre: string, description: string ,proprietaire: string,date_fin: Date}[]=[];
+  alltasks: { id: number,etat: string,titre: string, description: string ,proprietaire: string,date_fin: Date}[]=[];
   constructor(private taskAddService:TaskaddService) { 
     
   }
-  adddToDoTasks():void{
-    if(this.newtodoTaskname.trim()!==""&&this.newtodoTaskdescrip.trim()!==""&&this.newtodoTaskowner.trim()!==""){
-      this.taskAddService.addtodoTasks(this.newtodoTaskname,this.newtodoTaskowner,this.newtodoTaskdescrip);
-      this.todo=this.taskAddService.getAlltodotasks();
-      this.newtodoTaskname="";
-      this.newtodoTaskdescrip="";
-      this.newtodoTaskowner="";
-      console.log("todoaddsucc");
+ 
+  adddDoneTasks(): void {
+    if (this.newDoneTaskname.trim()!=="" && this.newDoneTaskdescrip.trim()!=="" && this.newDoneTaskowner.trim()!=="") {
+      this.taskAddService.addTask({
+        etat: "done",
+        titre: this.newDoneTaskname,
+        description: this.newDoneTaskdescrip,
+        proprietaire: this.newDoneTaskowner,
+        date_fin: this.newDoneDate
+      }).subscribe(res => {
+        console.log(res);
+      });
+      this.newDoneDate=undefined;
+      this.newDoneTaskname = "";
+      this.newDoneTaskdescrip = "";
+      this.newDoneTaskowner = "";
+      
     }
   }
-  adddDoneTasks():void{
-    if(this.newDoneTaskname.trim()!==""&&this.newDoneTaskdescrip.trim()!==""&&this.newDoneTaskowner.trim()!==""){
-      this.taskAddService.addtodoTasks(this.newDoneTaskname,this.newDoneTaskowner,this.newDoneTaskdescrip);
-      this.todo=this.taskAddService.getAlldonetasks();
-      this.newDoneTaskname="";
-      this.newDoneTaskdescrip="";
-      this.newDoneTaskowner="";
-      console.log("todoaddsucc");
-    }
-  }
-  adddInprogressTasks():void{
-    if(this.newinprogressTaskname.trim()!==""&&this.newinprogressTaskdescrip.trim()!==""&&this.newinprogressTaskowner.trim()!==""){
-      this.taskAddService.addtodoTasks(this.newinprogressTaskname,this.newinprogressTaskowner,this.newinprogressTaskdescrip);
-      this.todo=this.taskAddService.getAllinprogresstasks();
-      this.newinprogressTaskname="";
-      this.newinprogressTaskdescrip="";
-      this.newinprogressTaskowner="";
-      console.log("todoaddsucc");
-    }
-  }
-  // handleButtonClick(list: any): void {
-  //   if (list.nom === "ToDo") {
-  //     this.adddToDoTasks();
-  //   } else if (list.nom === "In Progress") {
-  //     this.adddInprogressTasks();
-  //   } else {
-  //     this.adddDoneTasks();
-  //   }
-  // }
   
-  ngOnInit() {
+  adddInprogressTasks():void{
+    if (this.newinprogressTaskname.trim() !== "" && this.newinprogressTaskdescrip.trim() !== "" && this.newinprogressTaskowner.trim() !== "") {
+      this.taskAddService.addTask({
+        etat: "in progress",
+        titre: this.newinprogressTaskname,
+        description: this.newinprogressTaskdescrip,
+        proprietaire: this.newinprogressTaskowner,
+        date_fin: this.newinprogressDate
+      }).subscribe(res => {
+        console.log(res);
+      });
+      this.newinprogressDate=undefined;
+      this.newinprogressTaskname = "";
+      this.newinprogressTaskdescrip = "";
+      this.newinprogressTaskowner = "";
+    }
+  }
+  adddToDoTasks():void{
+    if (this.newtodoTaskname.trim() !== "" && this.newtodoTaskdescrip.trim() !== "" && this.newtodoTaskowner.trim() !== "") {
+      this.taskAddService.addTask({
+        etat: "to do",
+        titre: this.newtodoTaskname,
+        description: this.newtodoTaskdescrip,
+        proprietaire: this.newtodoTaskowner,
+        date_fin: this.newtodoDate
+      }).subscribe(res => {
+        console.log(res);
+      });
+      this.newtodoDate=undefined;
+      this.newtodoTaskname = "";
+      this.newtodoTaskdescrip = "";
+      this.newtodoTaskowner = "";
+    }
+  }
+  ngOnInit(): void {
+    this.taskAddService.getAllTasks().subscribe(res => {
+      this.alltasks = res;
+      for (let task of this.alltasks) {
+        if (task.etat === 'done') {
+          this.done.push(task)
+        }
+        if (task.etat === 'to do') {
+          this.todo.push(task)
+        }
+        if (task.etat === 'in progress') {
+          this.inprogress.push(task)
+        }
+      }});
+    
   }
  
 
@@ -89,3 +122,27 @@ export class TasklistComponent implements OnInit {
 
  
 }
+
+
+
+ // adddToDoTasks():void{
+  //   if(this.newtodotitre.trim()!==""&&this.newtodoTaskdescrip.trim()!==""&&this.newtodoTaskproprietaire.trim()!==""){
+  //     this.taskAddService.addtodoTasks(this.newtodotitre,this.newtodoTaskproprietaire,this.newtodoTaskdescrip);
+  //     this.todo=this.taskAddService.getAlltodotasks();
+  //     this.newtodotitre="";
+  //     this.newtodoTaskdescrip="";
+  //     this.newtodoTaskproprietaire="";
+  //     console.log("todoaddsucc");
+  //   }
+  // }
+ 
+  // adddInprogressTasks():void{
+  //   if(this.newinprogresstitre.trim()!==""&&this.newinprogressTaskdescrip.trim()!==""&&this.newinprogressTaskproprietaire.trim()!==""){
+  //     this.taskAddService.addtodoTasks(this.newinprogresstitre,this.newinprogressTaskproprietaire,this.newinprogressTaskdescrip);
+  //     this.todo=this.taskAddService.getAllinprogresstasks();
+  //     this.newinprogresstitre="";
+  //     this.newinprogressTaskdescrip="";
+  //     this.newinprogressTaskproprietaire="";
+  //     console.log("todoaddsucc");
+  //   }
+  // }
