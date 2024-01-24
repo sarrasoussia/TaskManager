@@ -22,10 +22,10 @@
         <input type="date" id="deadline" [(ngModel)]="task.deadline" />
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="owner">Owner</label><br>
         <input id="owner" [(ngModel)]="task.owner" placeholder="Enter owner name" />
-      </div>
+      </div> -->
 
       <div class="form-group">
         <label for="exampleFormControlFile1">Add a file</label>
@@ -58,32 +58,71 @@
 
     <div class="task-list-content row">
 
-        <div *ngFor="let t of tasks" [ngClass]="getTaskColorClass(t.deadline)" class="task-item col-4">
-          <div *ngIf="!t.editing">
+        <div *ngFor="let t of tasks; let i = index" [ngClass]="getTaskColorClass(t.deadline)" class="task-item col-4">
+
+          <div *ngIf="!t.editMode" class="taskDetails">
             <p><strong>{{ t.name }}</strong></p>
             <p>Description: {{ t.description }}</p>
             <p>Deadline: {{ t.deadline | date }}</p>
-            <p>Owner: {{ t.owner | uppercase }}</p>
+            <!-- <p>Owner: {{ t.owner | uppercase }}</p> -->
             <p>State: {{ t.state }}</p>
             <p>Attached: {{ t.file }}</p>
-          </div>
 
-          <div *ngIf="t.editing" class="btn-div row">
+            <div class="btn-div row">
+              <button class="btn col-4" (click)="editTask(i)">Edit</button>
+              <button class="btn col-4" (click)="removeTask(t.id)">Delete</button>
+            </div>
+          </div>
+        
+          <div *ngIf="t.editMode" class="editTask btn-div row">
             <input [(ngModel)]="t.name" placeholder="Name">
             <textarea [(ngModel)]="t.description" placeholder="Description"></textarea>
-            <!-- Add input fields for other properties as needed -->
-            <button class="btn col-4" (click)="saveTask(t)">Save</button>
-            <button class="btn col-4" (click)="cancelEdit(t)">Cancel</button>
+            <button class="btn col-4" (click)="saveTask(t, i)">Save</button>
+            <button class="btn col-4" (click)="cancelEdit(t, i)">Cancel</button>
           </div>
+
+         
 
           <div class="btn-div row">
-            <button class="btn col-4" (click)="editTask(t)">Edit</button>
-            <button class="btn col-4" (click)="removeTask(t.id)">Remove</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Display Comments</button>
           </div>
+          
 
+          <!-- Modal structure -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Comments</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <!-- Display existing comments here -->
+              <ul id="comments-list" class="list-group">
+                <li class="list-group-item" *ngFor="let comment of comments">
+                  {{ comment.content }} - {{ comment.created_at }} by {{ comment.owner }}
+                </li>
+              </ul>
+
+              <!-- Original form for recipient and message -->
+              <form>
+                <div class="form-group">
+                  <label for="comment-text" class="col-form-label">Comment:</label>
+                  <textarea class="form-control" id="comment-text" [(ngModel)]="newCommentText"></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success" (click)="addComment()">Add Comment</button>
+            </div>
+          </div>
         </div>
+      </div>
 
-    </div>
+      </div>
 
 
   </div>

@@ -24,6 +24,7 @@ import { TaskComponent } from './components/task/task.component';
 import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { AddcollabComponent } from './components/addcollab/addcollab.component';
+import { CommentService } from './services/comment.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +37,7 @@ import { AddcollabComponent } from './components/addcollab/addcollab.component';
     SigninComponent,
     WelcomeComponent,
     TaskComponent,
-    AddcollabComponent
+    AddcollabComponent,
   ],
   imports: [
     CommonModule,
@@ -53,7 +54,7 @@ import { AddcollabComponent } from './components/addcollab/addcollab.component';
 
   
   ],
-  providers: [TaskaddService,AddcollaboratorService,DatePipe],
+  providers: [TaskaddService,AddcollaboratorService,DatePipe, CommentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

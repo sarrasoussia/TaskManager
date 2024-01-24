@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TaskService } from 'src/app/services/task.service';
 import { Task } from './Task';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+// import { CommentService } from 'src/app/services/comment.service';
+// import { Comment } from './Comment' 
 
 @Component({
   selector: 'app-task',
@@ -9,20 +12,45 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./task.component.css']
 })
 export class TaskComponent implements OnInit {
-  task: Task = new Task(0, '', '', new Date(), '', 'pending', null);
+  task: Task = new Task(0, '', '', new Date(), 'pending', null, '');
   tasks: Task[] = [];
+
+  // comments: Comment[] = [];
+  // newCommentText: string = '';
+  selectedTaskId: number;
+
+  userDetails: { username: string } | null = null;
 
   constructor(
     private taskService: TaskService,
     private datePipe: DatePipe,
+    private route: ActivatedRoute,
+    // private commentService: CommentService
   ) {}
 
-  ngOnInit(): void {
-    this.loadTasks();
+  private loadTasks(): void {
+    this.taskService.getTasks().subscribe(tasks => {
+      this.tasks = tasks;
+    });
   }
 
+  ngOnInit(): void {
 
-// partie tasks w ka jaw
+    this.loadTasks();
+
+    this.route.paramMap.subscribe(params => {
+      this.selectedTaskId = +params.get('taskId');
+    });
+
+     // this.fetchComments(this.selectedTaskId);
+
+      this.taskService.getActiveUserDetails().subscribe(
+        (data) => {
+          this.userDetails = data;
+        }
+      );
+    
+  }
 
   addTask(): void {
     const taskId = this.tasks.length + 1;
@@ -31,20 +59,15 @@ export class TaskComponent implements OnInit {
       this.task.name,
       this.task.description,
       this.task.deadline,
-      this.task.owner,
       this.task.state,
-      this.task.file
+      this.task.file,
+      this.task.username_task,
     );
     this.taskService.addTask(newTask).subscribe(() => {
+      this.task = new Task(0,'', '', new Date(), 'pending', null,'');
       this.loadTasks();
-      this.task = new Task(0,'', '', new Date(), '', 'pending', null);
     });
-  }
-
-  private loadTasks(): void {
-    this.taskService.getTasks().subscribe(tasks => {
-      this.tasks = tasks;
-    });
+    
   }
 
   removeTask(taskId: number): void {
@@ -58,34 +81,31 @@ export class TaskComponent implements OnInit {
         console.error('Error removing task:', error);
       }
     );
+  
   }
 
-  onFileSelected(event: any): void {
-    const fileInput = event.target;
-    if (fileInput.files.length > 0) {
-      this.task.file = fileInput.files[0].name;
-    }
+  // onFileSelected(event: any): void {
+  //   const fileInput = event.target;
+  //   if (fileInput.files.length > 0) {
+  //     this.task.file = fileInput.files[0].name;
+  //   }
+  // }
+
+  editTask(index: number): void {
+    this.tasks[index].editMode = true;
   }
 
-  // Start editing a task
-  editTask(task: Task): void {
-    task.editing = true;
-  }
-
-  // Save the edited task
-  saveTask(task: Task): void {
+  saveTask(task: any, index: number): void {
     this.taskService.updateTask(task).subscribe(() => {
       this.loadTasks();
-      task.editing = false; 
     });
+    this.tasks[index] = { ...task, editMode: false };
   }
 
-  // Cancel editing and discard changes
-  cancelEdit(task: Task): void {
-    task.editing = false; // Stop editing
+  cancelEdit(task: any, index: number): void {
+    this.tasks[index] = { ...task, editMode: false };
   }
 
-  // Add a method to calculate the difference in days
   calculateDaysDifference(deadline: Date): number {
     const currentDate = new Date();
     const deadlineDate = new Date(deadline);
@@ -105,9 +125,44 @@ export class TaskComponent implements OnInit {
     }
   }
 
+  // Comment section
+  // fetchComments(taskId: number): void {
+  //   this.commentService.getCommentsByTaskId(taskId).subscribe(
+  //     (data: Comment[]) => {
+  //       this.comments = data;
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching comments:', error);
+  //     }
+  //   );
+  // }
 
+  // addComment(taskId: number): void {
+  //   if (this.newCommentText.trim() !== '') {
+  //     const currentUsername = this.commentService.getCurrentUsername();
 
+  //     if (currentUsername) {
+  //       const newComment: Comment = {
+  //         id: 0,
+  //         content: this.newCommentText,
+  //         created_at: new Date(),
+  //         owner: currentUsername
+  //       };
 
+  //       this.commentService.addComment(newComment).subscribe(
+  //         (response: any) => {
+  //           this.fetchComments(taskId);
+  //         },
+  //         (error) => {
+  //           console.error('Error adding comment:', error);
+  //         }
+  //       );
+
+  //       // Clear the input field
+  //       this.newCommentText = '';
+  //     } else {
+  //       console.error('Unable to determine the current username.');
+  //     }
+  //   }
+  // }
 }
-
-

@@ -28,12 +28,8 @@ export class AddcollabComponent implements OnInit {
     this.userService.addCollaborator(this.enteredUsername).subscribe(
       (response) => {
         console.log('Collaborator added successfully', response);
-        
-        if (this.collaborators.indexOf(this.enteredUsername) === -1) {
-          this.collaborators.push(this.enteredUsername);
-        } else {
-          console.warn('Collaborator already exists locally');
-        }
+        // You can remove the unnecessary check below since it is handled in the service
+        this.collaborators.push(this.enteredUsername);
       },
       (error) => {
         console.error('Error adding collaborator', error);
@@ -42,6 +38,15 @@ export class AddcollabComponent implements OnInit {
         }
       }
     );
+  }
+
+  clearCollaborators() {
+    this.userService.clearCollaborators()
+      .subscribe(response => {
+        this.collaborators = response;
+      }, error => {
+        alert('Error clearing collaborators: ' + error.message);
+      });
   }
   
 

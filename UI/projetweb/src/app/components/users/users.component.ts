@@ -6,6 +6,7 @@ import { AddcollaboratorService } from 'src/app/services/addcollaborator.service
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+  userDetails: { username: string } | null = null;
   passwordd:string="";
   password:string="";
   newCollabUsername:string="";
@@ -13,26 +14,38 @@ export class UsersComponent implements OnInit {
   userss :string;
   constructor(private AddcollaboratorService:AddcollaboratorService) { }
   addCollab(){
-    this.AddcollaboratorService.addCollab(this.passwordd,this.newCollabUsername).subscribe(res=>{
+    this.AddcollaboratorService.addCollab(this.newCollabUsername).subscribe(res=>{
       console.log(res);
-      this.showcollabs();     
+      this.AddcollaboratorService.getActiveUserDetails().subscribe(
+        (data) => {
+          this.userDetails = data;
+          this.AddcollaboratorService.getcollabs(this.userDetails.username).subscribe(res=>{
+            this.userss=res[0].collaborators;
+            this.users=this.userss.split(',').filter(element => element !== '');
+          })
+        }      
+      );
     }
     )
-    this.passwordd="";
     this.newCollabUsername="";   
   }
-  showcollabs(){
-    this.AddcollaboratorService.getcollabs(this.password).subscribe(res=>{
-      this.userss=res[0].collaborators;
-      this.users=this.userss.split(',').filter(element => element !== '');
-    })
-
+  deleteCollab(){
+    this.AddcollaboratorService.deleteCollab(this.newCollabUsername).subscribe(res=>{
+      console.log(res);    
+    }
+    )
+    this.newCollabUsername="";   
   }
   ngOnInit() {
-    this.AddcollaboratorService.getcollabs(this.password).subscribe(res=>{
-      this.userss=res[0].collaborators;
-      this.users=this.userss.split(',').filter(element => element !== '');
-    })
+    this.AddcollaboratorService.getActiveUserDetails().subscribe(
+      (data) => {
+        this.userDetails = data;
+        this.AddcollaboratorService.getcollabs(this.userDetails.username).subscribe(res=>{
+          this.userss=res[0].collaborators;
+          this.users=this.userss.split(',').filter(element => element !== '');
+        })
+      }      
+    );
    
   }
 

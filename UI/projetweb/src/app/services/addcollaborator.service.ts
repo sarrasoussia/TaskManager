@@ -6,13 +6,26 @@ import { Observable } from 'rxjs';
 })
 export class AddcollaboratorService {
   private apiUrl = 'http://localhost:3000/collab';
+  private apiUrl1 = 'http://localhost:3000/activeUser';
+
+  getActiveUserDetails(): Observable<{ username: string }> {
+    const url = this.apiUrl1;
+    return this.http.get<{ username: string }>(url);
+  }
   
-  addCollab(passwordd: string, collabusername: string): Observable<any> {
-    const requestBody = { passwordd: passwordd, collabusername: collabusername };
+  addCollab(collabusername: string): Observable<any> {
+    const requestBody = {collabusername: collabusername };
     return this.http.post(this.apiUrl, requestBody);
   }
-  getcollabs(password:string): Observable<{username:string,name:string,surname:string,email:string,password:string,collaborators:string}[]>{
-    const url = `${this.apiUrl}?password=${password}`;
+  deleteCollab(collabusername: string): Observable<any> {
+    const options = {
+      body: { collabusername: collabusername } 
+    };
+    return this.http.request('delete', this.apiUrl, options);
+  }
+  
+  getcollabs(username:string): Observable<{username:string,name:string,surname:string,email:string,password:string,collaborators:string}[]>{
+    const url = `${this.apiUrl}?username=${username}`;
     return this.http.get<{username:string,name:string,surname:string,email:string,password:string,collaborators:string}[]>(url);
   }
 

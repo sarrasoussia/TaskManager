@@ -3,12 +3,14 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { TaskaddService } from 'src/app/services/taskadd.service';
 
 
+
 @Component({
   selector: 'app-tasklist',
   templateUrl: './tasklist.component.html',
   styleUrls: ['./tasklist.component.css'],
 })
 export class TasklistComponent implements OnInit {
+  userDetails: { username: string } | null = null;
   newDoneTaskname:string="";
   newDoneTaskdescrip:string="";
   newDoneTaskowner:string="";
@@ -38,8 +40,27 @@ export class TasklistComponent implements OnInit {
         titre: this.newDoneTaskname,
         description: this.newDoneTaskdescrip,
         proprietaire: this.newDoneTaskowner,
-        date_fin: this.newDoneDate
+        date_fin: this.newDoneDate,
+        username: this.userDetails.username
       }).subscribe(res => {
+        this.taskAddService.getActiveUserDetails().subscribe(
+          (data) => {
+            this.userDetails = data;
+            this.taskAddService.getAllTasks(this.userDetails.username).subscribe(
+              (res) => {
+                this.alltasks = res;
+                this.done.push(this.alltasks[this.alltasks.length-1]);
+                
+              },
+              (error) => {
+                console.error('Error fetching tasks:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching user details:', error);
+          }
+        );
         console.log(res);
       });
       this.newDoneDate=undefined;
@@ -57,8 +78,27 @@ export class TasklistComponent implements OnInit {
         titre: this.newinprogressTaskname,
         description: this.newinprogressTaskdescrip,
         proprietaire: this.newinprogressTaskowner,
-        date_fin: this.newinprogressDate
+        date_fin: this.newinprogressDate,
+        username: this.userDetails.username
       }).subscribe(res => {
+        this.taskAddService.getActiveUserDetails().subscribe(
+          (data) => {
+            this.userDetails = data;
+            this.taskAddService.getAllTasks(this.userDetails.username).subscribe(
+              (res) => {
+                this.alltasks = res;
+                this.alltasks = res;
+                this.inprogress.push(this.alltasks[this.alltasks.length-1]);
+              },
+              (error) => {
+                console.error('Error fetching tasks:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching user details:', error);
+          }
+        );
         console.log(res);
       });
       this.newinprogressDate=undefined;
@@ -74,8 +114,26 @@ export class TasklistComponent implements OnInit {
         titre: this.newtodoTaskname,
         description: this.newtodoTaskdescrip,
         proprietaire: this.newtodoTaskowner,
-        date_fin: this.newtodoDate
+        date_fin: this.newtodoDate,
+        username: this.userDetails.username
       }).subscribe(res => {
+        this.taskAddService.getActiveUserDetails().subscribe(
+          (data) => {
+            this.userDetails = data;
+            this.taskAddService.getAllTasks(this.userDetails.username).subscribe(
+              (res) => {
+                this.alltasks = res;
+                this.todo.push(this.alltasks[this.alltasks.length-1]);
+              },
+              (error) => {
+                console.error('Error fetching tasks:', error);
+              }
+            );
+          },
+          (error) => {
+            console.error('Error fetching user details:', error);
+          }
+        );
         console.log(res);
       });
       this.newtodoDate=undefined;
@@ -85,21 +143,35 @@ export class TasklistComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    this.taskAddService.getAllTasks().subscribe(res => {
-      this.alltasks = res;
-      for (let task of this.alltasks) {
-        if (task.etat === 'done') {
-          this.done.push(task)
-        }
-        if (task.etat === 'to do') {
-          this.todo.push(task)
-        }
-        if (task.etat === 'in progress') {
-          this.inprogress.push(task)
-        }
-      }});
-    
+    this.taskAddService.getActiveUserDetails().subscribe(
+      (data) => {
+        this.userDetails = data;
+        this.taskAddService.getAllTasks(this.userDetails.username).subscribe(
+          (res) => {
+            this.alltasks = res;
+            for (let task of this.alltasks) {
+              if (task.etat === 'done') {
+                this.done.push(task);
+              }
+              if (task.etat === 'to do') {
+                this.todo.push(task);
+              }
+              if (task.etat === 'in progress') {
+                this.inprogress.push(task);
+              }
+            }
+          },
+          (error) => {
+            console.error('Error fetching tasks:', error);
+          }
+        );
+      },
+      (error) => {
+        console.error('Error fetching user details:', error);
+      }
+    );
   }
+  
  
 
   drop(event: CdkDragDrop<string[]>) {
@@ -118,31 +190,7 @@ export class TasklistComponent implements OnInit {
     {ala:this.todo,nom:"ToDo"},
     {ala:this.inprogress,nom:"In Progress"},
     {ala:this.done,nom:"Done"},
-  ]
+  ]
 
- 
+ 
 }
-
-
-
- // adddToDoTasks():void{
-  //   if(this.newtodotitre.trim()!==""&&this.newtodoTaskdescrip.trim()!==""&&this.newtodoTaskproprietaire.trim()!==""){
-  //     this.taskAddService.addtodoTasks(this.newtodotitre,this.newtodoTaskproprietaire,this.newtodoTaskdescrip);
-  //     this.todo=this.taskAddService.getAlltodotasks();
-  //     this.newtodotitre="";
-  //     this.newtodoTaskdescrip="";
-  //     this.newtodoTaskproprietaire="";
-  //     console.log("todoaddsucc");
-  //   }
-  // }
- 
-  // adddInprogressTasks():void{
-  //   if(this.newinprogresstitre.trim()!==""&&this.newinprogressTaskdescrip.trim()!==""&&this.newinprogressTaskproprietaire.trim()!==""){
-  //     this.taskAddService.addtodoTasks(this.newinprogresstitre,this.newinprogressTaskproprietaire,this.newinprogressTaskdescrip);
-  //     this.todo=this.taskAddService.getAllinprogresstasks();
-  //     this.newinprogresstitre="";
-  //     this.newinprogressTaskdescrip="";
-  //     this.newinprogressTaskproprietaire="";
-  //     console.log("todoaddsucc");
-  //   }
-  // }

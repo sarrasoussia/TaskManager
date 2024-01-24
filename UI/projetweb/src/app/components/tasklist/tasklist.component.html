@@ -2,6 +2,7 @@
   <div cdkDropListGroup class="d-flex ">
     <div *ngFor="let list of lists" cdkDropList [cdkDropListData]="list.ala" class="example-list " (cdkDropListDropped)="drop($event)">
       <h2>{{list.nom}}</h2><br>
+      
       <div class="example-container">
         <div *ngFor="let item of list.ala" cdkDrag [cdkDragData]="item" class="example-box ">
           <div>
@@ -12,7 +13,7 @@
             <i class="label">Task Owner: </i>
             <h6 class="value">{{ item.proprietaire }}</h6>
             <i class="label">final date: </i>
-            <h6 class="value">{{ item.date_fin }}</h6>
+            <h6 class="value">{{ item.date_fin | date:'yyyy-MM-dd' }}</h6>
           </div>
         </div>
       </div>
@@ -27,7 +28,7 @@
           <input [(ngModel)]="newDoneTaskdescrip"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner username</span>
           <input [(ngModel)]="newDoneTaskowner"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
@@ -46,7 +47,7 @@
           <input [(ngModel)]="newtodoTaskdescrip"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner username</span>
           <input [(ngModel)]="newtodoTaskowner"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
@@ -66,7 +67,7 @@
           <input [(ngModel)]="newinprogressTaskdescrip"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Task Owner username</span>
           <input [(ngModel)]="newinprogressTaskowner"type="text" class="form-control input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-3">
@@ -77,5 +78,5 @@
       </div>
 
     </div>
-  </div>
+  </div>
 </div>

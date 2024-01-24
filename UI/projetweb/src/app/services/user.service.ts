@@ -24,29 +24,30 @@ export class UserService {
     return this.http.post(url, {});
   }
 
- // Add a function to update collaborators locally
-private updateLocalCollaborators(collaborator: string): void {
-  const updatedCollaborators = [...this.collaboratorsSubject.value, collaborator];
-  this.collaboratorsSubject.next(updatedCollaborators);
-}
 
-// Modify addCollaborator to use the new function
-addCollaborator(username: string): Observable<any> {
+
+  addCollaborator(username: string): Observable<any> {
+    return this.getActiveUserDetails().pipe(
+      switchMap((activeUser) => {
+        const activeUsername = activeUser.username;
+        if (this.collaboratorsSubject.value.includes(username)) {
+          alert('Error adding collaborator!');
+          return; }
+        const url = `${this.apiUrl}/addCollaborator`;
+        const body = { username: activeUsername, collaborator: username };
+        this.updateLocalCollaborators(username);
+        return this.http.post(url, body);
+      })
+    );
+  }
+  
+
+clearCollaborators(): Observable<string[]> {
   return this.getActiveUserDetails().pipe(
-    switchMap((activeUser) => {
-      const activeUsername = activeUser.username;
-
-      if (this.collaboratorsSubject.value.includes(username)) {
-        console.warn('Collaborator already exists locally');
-        return of({ message: 'Collaborator already exists locally' });
-      }
-
-      const url = `${this.apiUrl}/addCollaborator`;
-      const body = { username: activeUsername, collaborator: username };
-
-      this.updateLocalCollaborators(username);
-
-      return this.http.post(url, body);
+    switchMap(activeUser => {
+      const url = `${this.apiUrl}/clearCollaborators`;
+      const body = { username: activeUser.username };
+      return this.http.post<string[]>(url, body).pipe();
     })
   );
 }
@@ -57,5 +58,10 @@ getCollaborators(): Observable<string[]> {
   return this.http.get<string[]>(url);
 }
   
+ //update collaborators locally
+ private updateLocalCollaborators(collaborator: string): void {
+  const updatedCollaborators = [...this.collaboratorsSubject.value, collaborator];
+  this.collaboratorsSubject.next(updatedCollaborators);
+}
 
 }
